@@ -53,10 +53,9 @@ const swaggerOptions = {
 
     servers: [
       {
-        url:
-          process.env.RAILWAY_STATIC_URL
-            ? `https://${process.env.RAILWAY_STATIC_URL}`
-            : `http://localhost:${PORT}`,
+        url: process.env.RAILWAY_STATIC_URL
+          ? `https://${process.env.RAILWAY_STATIC_URL}`
+          : `http://localhost:${PORT}`,
       },
     ],
   },
@@ -69,7 +68,9 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use(
   "/docs",
   swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec)
+  swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+  })
 );
 
 // ======================================
@@ -213,9 +214,14 @@ app.get("/", async (req, res) => {
  *       - in: path
  *         name: anime
  *         required: true
+ *         description: Selecciona un anime
  *         schema:
  *           type: string
- *         example: onepiece
+ *           enum:
+ *             - saintseiya
+ *             - hunterxhunter
+ *             - onepiece
+ *         example: saintseiya
  *     responses:
  *       200:
  *         description: Lista de personajes
@@ -259,8 +265,13 @@ app.get("/:anime/personajes", async (req, res) => {
  *       - in: path
  *         name: anime
  *         required: true
+ *         description: Selecciona un anime
  *         schema:
  *           type: string
+ *           enum:
+ *             - saintseiya
+ *             - hunterxhunter
+ *             - onepiece
  *         example: saintseiya
  *
  *       - in: query
@@ -332,8 +343,13 @@ app.get("/:anime/personajes/buscar", async (req, res) => {
  *       - in: path
  *         name: anime
  *         required: true
+ *         description: Selecciona un anime
  *         schema:
  *           type: string
+ *           enum:
+ *             - saintseiya
+ *             - hunterxhunter
+ *             - onepiece
  *         example: onepiece
  *
  *       - in: path
