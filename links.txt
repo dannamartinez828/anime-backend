@@ -1,0 +1,3 @@
+api funcionando 
+
+https://anime-backend-production-f190.up.railway.app/
