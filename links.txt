@@ -1,3 +1,45 @@
 api funcionando 
 
 https://anime-backend-production-f190.up.railway.app/
+
+swagger
+
+https://anime-backend-production-f190.up.railway.app/docs
+
+personajes de SaintSeiya
+
+https://anime-backend-production-f190.up.railway.app/saintseiya/personajes
+
+personajes One Piece
+
+https://anime-backend-production-f190.up.railway.app/onepiece/personajes
+
+personajes HunterxHunter
+
+https://anime-backend-production-f190.up.railway.app/hunterxhunter/personajes
+
+
+persoanje especfico por ejemplo Seiya
+
+https://anime-backend-production-f190.up.railway.app/saintseiya/personajes/buscar?nombre=Seiya
+
+Luffy
+https://anime-backend-production-f190.up.railway.app/onepiece/personajes/buscar?nombre=Luffy
+
+Killua
+
+https://anime-backend-production-f190.up.railway.app/hunterxhunter/personajes/buscar?nombre=Killua
+
+por ID
+
+seiya
+
+https://anime-backend-production-f190.up.railway.app/saintseiya/personajes/1
+
+chopper
+
+https://anime-backend-production-f190.up.railway.app/onepiece/personajes/26
+
+kurapika
+
+https://anime-backend-production-f190.up.railway.app/hunterxhunter/personajes/13

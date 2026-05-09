@@ -277,8 +277,8 @@ INSERT INTO imagenes (url, descripcion, personaje_id) VALUES
 -- ── HYOGA (id = 3) ───────────────────────────────────
 INSERT INTO imagenes (url, descripcion, personaje_id) VALUES
 ('https://res.cloudinary.com/dq02mysvu/image/upload/v1778283924/hyoga1_dlkmra.jpg',  'Hyoga imagen 1', 3),
-('https://res.cloudinary.com/dq02mysvu/image/upload/v1778283922/hyoga2_w3riad.jpg',  'Hyoga imagen 2', 3),
-('https://res.cloudinary.com/dq02mysvu/image/upload/v1778283921/hyoga3_ez7ot4.jpg',  'Hyoga imagen 3', 3),
+('https://res.cloudinary.com/dq02mysvu/image/upload/v1778294694/hyoga2_byg6zg.jpg',  'Hyoga imagen 2', 3),
+('https://res.cloudinary.com/dq02mysvu/image/upload/v1778294408/hyoga3_acz2ty.jpg',  'Hyoga imagen 3', 3),
 ('https://res.cloudinary.com/dq02mysvu/image/upload/v1778283920/hyoga4_lqkvqa.jpg',  'Hyoga imagen 4', 3);
 
 -- ── SHUN (id = 4) ────────────────────────────────────
