@@ -5,7 +5,7 @@ const router = express.Router();
 const authService =
   require("./auth.service");
 
-  /**
+/**
  * @swagger
  * /auth/register:
  *   post:
@@ -29,16 +29,9 @@ const authService =
  *       200:
  *         description: Usuario registrado
  */
-
-// ======================================
-// REGISTER
-// ======================================
-
 router.post(
   "/register",
-
   async (req, res) => {
-
     try {
 
       const {
@@ -47,14 +40,14 @@ router.post(
         password
       } = req.body;
 
-      const data =
+      const usuario =
         await authService.register(
           nombre,
           email,
           password
         );
 
-      res.json(data);
+      res.json(usuario);
 
     } catch (error) {
 
@@ -63,7 +56,6 @@ router.post(
       });
 
     }
-
   }
 );
 
@@ -88,17 +80,10 @@ router.post(
  *     responses:
  *       200:
  *         description: Login exitoso
- */ 
-
-// ======================================
-// LOGIN
-// ======================================
-
+ */
 router.post(
   "/login",
-
   async (req, res) => {
-
     try {
 
       const {
@@ -121,7 +106,6 @@ router.post(
       });
 
     }
-
   }
 );
 
