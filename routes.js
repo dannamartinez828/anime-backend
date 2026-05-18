@@ -63,7 +63,7 @@ router.get(
 
       res.json({
         total: rows.length,
-        personajes: rows,
+        personaje: rows,
       });
 
     } catch (err) {
@@ -112,7 +112,7 @@ router.get(
 
       res.json({
         total: rows.length,
-        personaje: rows[0],
+        personaje: rows,
       });
 
     } catch (err) {
@@ -245,7 +245,7 @@ router.get(
 
       res.json({
         total: rows.length,
-        personaje: rows[0],
+        personaje: rows,
       });
 
     } catch (err) {
@@ -378,7 +378,7 @@ router.get(
 
       res.json({
         total: rows.length,
-        personaje: rows[0],
+        personaje: rows,
       });
 
     } catch (err) {

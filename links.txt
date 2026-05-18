@@ -1,45 +1,119 @@
-api funcionando 
+========================================
+API PRINCIPAL
+========================================
 
+API funcionando
 https://anime-backend-production-f190.up.railway.app/
 
-swagger
-
+Swagger Docs
 https://anime-backend-production-f190.up.railway.app/docs
 
-personajes de SaintSeiya
 
+========================================
+SAINT SEIYA
+========================================
+
+Todos los personajes Saint Seiya
 https://anime-backend-production-f190.up.railway.app/saintseiya/personajes
 
-personajes One Piece
-
-https://anime-backend-production-f190.up.railway.app/onepiece/personajes
-
-personajes HunterxHunter
-
-https://anime-backend-production-f190.up.railway.app/hunterxhunter/personajes
-
-
-persoanje especfico por ejemplo Seiya
-
+Buscar personaje Seiya
 https://anime-backend-production-f190.up.railway.app/saintseiya/personajes/buscar?nombre=Seiya
 
-Luffy
-https://anime-backend-production-f190.up.railway.app/onepiece/personajes/buscar?nombre=Luffy
+Buscar personaje Shiryu
+https://anime-backend-production-f190.up.railway.app/saintseiya/personajes/buscar?nombre=Shiryu
 
-Killua
-
-https://anime-backend-production-f190.up.railway.app/hunterxhunter/personajes/buscar?nombre=Killua
-
-por ID
-
-seiya
-
+Personaje Saint Seiya por ID
 https://anime-backend-production-f190.up.railway.app/saintseiya/personajes/1
 
-chopper
 
+========================================
+HUNTER X HUNTER
+========================================
+
+Todos los personajes Hunter x Hunter
+https://anime-backend-production-f190.up.railway.app/hunterxhunter/personajes
+
+Buscar personaje Kurapika
+https://anime-backend-production-f190.up.railway.app/hunterxhunter/personajes/buscar?nombre=Kurapika
+
+Buscar personaje Killua
+https://anime-backend-production-f190.up.railway.app/hunterxhunter/personajes/buscar?nombre=Killua
+
+Personaje Hunter x Hunter por ID
+https://anime-backend-production-f190.up.railway.app/hunterxhunter/personajes/13
+
+
+========================================
+ONE PIECE
+========================================
+
+Todos los personajes One Piece
+https://anime-backend-production-f190.up.railway.app/onepiece/personajes
+
+Buscar personaje Luffy
+https://anime-backend-production-f190.up.railway.app/onepiece/personajes/buscar?nombre=Luffy
+
+Buscar personaje Zoro
+https://anime-backend-production-f190.up.railway.app/onepiece/personajes/buscar?nombre=Zoro
+
+Personaje One Piece por ID
 https://anime-backend-production-f190.up.railway.app/onepiece/personajes/26
 
-kurapika
 
-https://anime-backend-production-f190.up.railway.app/hunterxhunter/personajes/13
+========================================
+AUTH - SOLO POSTMAN / SWAGGER
+========================================
+
+Register Usuario
+POST
+https://anime-backend-production-f190.up.railway.app/auth/register
+
+Body JSON:
+{
+  "nombre": "Danna",
+  "email": "d@gmail.com",
+  "password": "12345"
+}
+
+
+Login Usuario
+POST
+https://anime-backend-production-f190.up.railway.app/auth/login
+
+Body JSON:
+{
+  "email": "d@gmail.com",
+  "password": "12345"
+}
+
+
+========================================
+SWAGGER AUTH
+========================================
+
+Abrir Swagger
+https://anime-backend-production-f190.up.railway.app/docs
+
+Ahí puedes probar:
+
+POST /auth/register
+
+POST /auth/login
+
+GET /saintseiya/personajes
+
+GET /hunterxhunter/personajes
+
+GET /onepiece/personajes
+
+GET /saintseiya/personajes/buscar
+
+GET /hunterxhunter/personajes/buscar
+
+GET /onepiece/personajes/buscar
+
+GET /saintseiya/personajes/{id}
+
+GET /hunterxhunter/personajes/{id}
+
+GET /onepiece/personajes/{id}
