@@ -1,12 +1,24 @@
 const db = require("./db");
+
 const bcrypt = require("bcrypt");
+
 const jwt = require("jsonwebtoken");
 
-async function register(nombre, email, password) {
+// ==========================================
+// REGISTER
+// ==========================================
 
-    // verificar si existe
+async function register(
+    nombre,
+    email,
+    password
+) {
+
     const existe = await db.query(
-        "SELECT * FROM usuarios WHERE email = $1",
+        `
+        SELECT * FROM usuarios
+        WHERE email = $1
+        `,
         [email]
     );
 
@@ -14,26 +26,48 @@ async function register(nombre, email, password) {
         throw new Error("El usuario ya existe");
     }
 
-    // hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword =
+        await bcrypt.hash(password, 10);
 
-    // insertar
     const result = await db.query(
         `
-        INSERT INTO usuarios (nombre, email, password)
+        INSERT INTO usuarios
+        (
+            nombre,
+            email,
+            password
+        )
         VALUES ($1, $2, $3)
-        RETURNING id, nombre, email
+
+        RETURNING
+        id,
+        nombre,
+        email
         `,
-        [nombre, email, hashedPassword]
+        [
+            nombre,
+            email,
+            hashedPassword
+        ]
     );
 
     return result.rows[0];
 }
 
-async function login(email, password) {
+// ==========================================
+// LOGIN
+// ==========================================
+
+async function login(
+    email,
+    password
+) {
 
     const result = await db.query(
-        "SELECT * FROM usuarios WHERE email = $1",
+        `
+        SELECT * FROM usuarios
+        WHERE email = $1
+        `,
         [email]
     );
 
@@ -43,10 +77,11 @@ async function login(email, password) {
 
     const usuario = result.rows[0];
 
-    const validPassword = await bcrypt.compare(
-        password,
-        usuario.password
-    );
+    const validPassword =
+        await bcrypt.compare(
+            password,
+            usuario.password
+        );
 
     if (!validPassword) {
         throw new Error("Contraseña incorrecta");
@@ -64,7 +99,9 @@ async function login(email, password) {
     );
 
     return {
+
         token,
+
         usuario: {
             id: usuario.id,
             nombre: usuario.nombre,

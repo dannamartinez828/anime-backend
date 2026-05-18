@@ -11,7 +11,8 @@ const swaggerJsdoc =
 
 const routes = require("./routes");
 
-const authRoutes = require("./auth.routes");
+const authRoutes =
+  require("./auth.routes");
 
 const app = express();
 
@@ -28,9 +29,13 @@ app.use(cors({
 
 app.use(express.json());
 
-app.use("/auth", authRoutes);
-
 app.set("trust proxy", 1);
+
+// ======================================
+// RUTAS AUTH
+// ======================================
+
+app.use("/auth", authRoutes);
 
 // ======================================
 // SWAGGER
@@ -43,10 +48,14 @@ const swaggerOptions = {
     openapi: "3.0.0",
 
     info: {
+
       title: "Anime Microservices API",
-      version: "1.0.0",
+
+      version: "2.0.0",
+
       description:
-        "API Anime usando Express + PostgreSQL + Railway",
+        "API Anime usando Express + PostgreSQL + Railway + Login JWT",
+
     },
 
     servers: [
@@ -57,9 +66,36 @@ const swaggerOptions = {
             : `http://localhost:${PORT}`,
       },
     ],
+
+    components: {
+
+      securitySchemes: {
+
+        bearerAuth: {
+
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+
+        },
+
+      },
+
+    },
+
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
+
   },
 
-  apis: ["./routes.js"],
+  apis: [
+    "./routes.js",
+    "./auth.routes.js",
+  ],
+
 };
 
 const swaggerSpec =
@@ -74,10 +110,38 @@ app.use(
 );
 
 // ======================================
-// ROUTES
+// RUTAS API
 // ======================================
 
 app.use(routes);
+
+// ======================================
+// HOME
+// ======================================
+
+app.get("/", (req, res) => {
+
+  res.json({
+
+    mensaje:
+      "🚀 Anime API funcionando correctamente",
+
+    swagger:
+      "/docs",
+
+    auth: {
+
+      register:
+        "/auth/register",
+
+      login:
+        "/auth/login",
+
+    },
+
+  });
+
+});
 
 // ======================================
 // 404
@@ -86,7 +150,10 @@ app.use(routes);
 app.use((req, res) => {
 
   res.status(404).json({
-    error: "Ruta no encontrada",
+
+    error:
+      "Ruta no encontrada",
+
   });
 
 });
@@ -102,7 +169,7 @@ app.listen(PORT, () => {
   );
 
   console.log(
-    `📘 Swagger Docs: /docs`
+    `📘 Swagger Docs: http://localhost:${PORT}/docs`
   );
 
 });

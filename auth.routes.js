@@ -2,64 +2,115 @@ const express = require("express");
 
 const router = express.Router();
 
-const authService = require("./auth.service");
+const authService =
+    require("./auth.service");
 
-// ==========================================
-// REGISTER
-// ==========================================
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Registrar usuario
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Usuario registrado
+ */
 
-router.post("/register", async (req, res) => {
+router.post(
+    "/register",
 
-    try {
+    async (req, res) => {
 
-        const {
-            nombre,
-            email,
-            password
-        } = req.body;
+        try {
 
-        const usuario = await authService.register(
-            nombre,
-            email,
-            password
-        );
+            const {
+                nombre,
+                email,
+                password
+            } = req.body;
 
-        res.json(usuario);
+            const usuario =
+                await authService.register(
+                    nombre,
+                    email,
+                    password
+                );
 
-    } catch (error) {
+            res.json(usuario);
 
-        res.status(400).json({
-            error: error.message
-        });
+        } catch (error) {
+
+            res.status(400).json({
+                error: error.message
+            });
+        }
     }
-});
+);
 
-// ==========================================
-// LOGIN
-// ==========================================
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login usuario
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login exitoso
+ */
 
-router.post("/login", async (req, res) => {
+router.post(
+    "/login",
 
-    try {
+    async (req, res) => {
 
-        const {
-            email,
-            password
-        } = req.body;
+        try {
 
-        const data = await authService.login(
-            email,
-            password
-        );
+            const {
+                email,
+                password
+            } = req.body;
 
-        res.json(data);
+            const data =
+                await authService.login(
+                    email,
+                    password
+                );
 
-    } catch (error) {
+            res.json(data);
 
-        res.status(400).json({
-            error: error.message
-        });
+        } catch (error) {
+
+            res.status(400).json({
+                error: error.message
+            });
+        }
     }
-});
+);
 
 module.exports = router;
