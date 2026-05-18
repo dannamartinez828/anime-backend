@@ -1,71 +1,128 @@
 const pool = require("./db");
 
-// ======================================
-// TODOS
-// ======================================
+async function buscarSaintSeiya(nombre) {
 
-async function obtenerTodosOnePiece() {
+  const query = `
+    SELECT
+      p.id,
+      p.nombre,
+      p.edad,
+      p.raza,
+      p.poder,
+      p.descripcion,
+      p.categoria,
 
-  const result = await pool.query(
-    `
-    SELECT *
-    FROM personajes
-    WHERE anime_id = 3
-    ORDER BY id
-    `
-  );
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', i.id,
+            'url', i.url,
+            'descripcion', i.descripcion
+          )
+        ) FILTER (WHERE i.id IS NOT NULL),
+        '[]'
+      ) AS imagenes
 
-  return result.rows;
+    FROM personajes p
 
+    LEFT JOIN imagenes i
+      ON i.personaje_id = p.id
+
+    WHERE p.anime_id = 1
+      AND LOWER(p.nombre)
+      LIKE LOWER($1)
+
+    GROUP BY p.id
+  `;
+
+  const values = [`%${nombre}%`];
+
+  const { rows } =
+    await pool.query(query, values);
+
+  return rows;
 }
 
-// ======================================
-// BUSCAR
-// ======================================
+async function obtenerTodosSaintSeiya() {
 
-async function buscarOnePiece(nombre) {
+  const query = `
+    SELECT
+      p.id,
+      p.nombre,
+      p.edad,
+      p.raza,
+      p.poder,
+      p.descripcion,
+      p.categoria,
 
-  const result = await pool.query(
-    `
-    SELECT *
-    FROM personajes
-    WHERE anime_id = 3
-    AND LOWER(nombre)
-    LIKE LOWER($1)
-    `,
-    [`%${nombre}%`]
-  );
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', i.id,
+            'url', i.url,
+            'descripcion', i.descripcion
+          )
+        ) FILTER (WHERE i.id IS NOT NULL),
+        '[]'
+      ) AS imagenes
 
-  return result.rows;
+    FROM personajes p
 
+    LEFT JOIN imagenes i
+      ON i.personaje_id = p.id
+
+    WHERE p.anime_id = 3
+
+    GROUP BY p.id
+  `;
+
+  const { rows } =
+    await pool.query(query);
+
+  return rows;
 }
 
-// ======================================
-// POR ID
-// ======================================
+async function obtenerSaintSeiyaPorId(id) {
 
-async function obtenerOnePiecePorId(id) {
+  const query = `
+    SELECT
+      p.id,
+      p.nombre,
+      p.edad,
+      p.raza,
+      p.poder,
+      p.descripcion,
+      p.categoria,
 
-  const result = await pool.query(
-    `
-    SELECT *
-    FROM personajes
-    WHERE anime_id = 3
-    AND id = $1
-    `,
-    [id]
-  );
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', i.id,
+            'url', i.url,
+            'descripcion', i.descripcion
+          )
+        ) FILTER (WHERE i.id IS NOT NULL),
+        '[]'
+      ) AS imagenes
 
-  return result.rows[0];
+    FROM personajes p
 
+    LEFT JOIN imagenes i
+      ON i.personaje_id = p.id
+
+    WHERE p.id = $1
+
+    GROUP BY p.id
+  `;
+
+  const { rows } =
+    await pool.query(query, [id]);
+
+  return rows[0];
 }
 
 module.exports = {
-
-  obtenerTodosOnePiece,
-
-  buscarOnePiece,
-
-  obtenerOnePiecePorId,
-
+  buscarSaintSeiya,
+  obtenerTodosSaintSeiya,
+  obtenerSaintSeiyaPorId,
 };
