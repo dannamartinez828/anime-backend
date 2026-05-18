@@ -471,6 +471,79 @@ INSERT INTO imagenes (url, descripcion, personaje_id) VALUES
 ('https://res.cloudinary.com/dq02mysvu/image/upload/v1778285773/law4_azjg5s.jpg',    'Law imagen 4', 30);
 
 -- =====================================================
+-- TABLA USUARIOS
+-- =====================================================
+
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =====================================================
+-- TABLA CATEGORIAS PERSONALIZADAS
+-- Cada usuario puede crear sus propias categorías
+-- =====================================================
+
+CREATE TABLE categorias (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    usuario_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE
+);
+
+-- =====================================================
+-- TABLA RELACION CATEGORIA ↔ ANIME
+-- Un usuario mete animes dentro de categorías
+-- =====================================================
+
+CREATE TABLE categoria_animes (
+    id SERIAL PRIMARY KEY,
+
+    categoria_id INT NOT NULL,
+    anime_id INT NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (categoria_id)
+        REFERENCES categorias(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (anime_id)
+        REFERENCES animes(id)
+        ON DELETE CASCADE
+);
+
+-- =====================================================
+-- TABLA FAVORITOS EN BACKEND
+-- (mejor que AsyncStorage solamente)
+-- =====================================================
+
+CREATE TABLE favoritos (
+    id SERIAL PRIMARY KEY,
+
+    usuario_id INT NOT NULL,
+    personaje_id INT NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (personaje_id)
+        REFERENCES personajes(id)
+        ON DELETE CASCADE
+);
+
+-- =====================================================
 -- CONSULTA PARA EXPO  (buscar personaje por nombre)
 -- =====================================================
 

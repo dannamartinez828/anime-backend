@@ -11,6 +11,8 @@ const swaggerJsdoc =
 
 const routes = require("./routes");
 
+const authRoutes = require("./auth.routes");
+
 const app = express();
 
 const PORT =
@@ -25,6 +27,8 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+app.use("/auth", authRoutes);
 
 app.set("trust proxy", 1);
 
