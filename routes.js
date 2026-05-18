@@ -2,29 +2,27 @@ const express = require("express");
 
 const {
   buscarSaintSeiya,
+  obtenerSaintSeiyaPorId,
+  obtenerTodosSaintSeiya,
 } = require("./saintseiya.service");
 
 const {
   buscarHunter,
+  obtenerHunterPorId,
+  obtenerTodosHunter,
 } = require("./hunterxhunter.service");
 
 const {
   buscarOnePiece,
+  obtenerOnePiecePorId,
+  obtenerTodosOnePiece,
 } = require("./onepiece.service");
 
 const router = express.Router();
 
-/**
- * @swagger
- * /:
- *   get:
- *     summary: Health Check API
- *     tags:
- *       - Health
- *     responses:
- *       200:
- *         description: API funcionando
- */
+// ======================================
+// HEALTH CHECK
+// ======================================
 
 router.get("/", (req, res) => {
 
@@ -35,24 +33,38 @@ router.get("/", (req, res) => {
 
 });
 
-/**
- * @swagger
- * /saintseiya/personajes/buscar:
- *   get:
- *     summary: Buscar personaje Saint Seiya
- *     tags:
- *       - Saint Seiya
- *     parameters:
- *       - in: query
- *         name: nombre
- *         required: true
- *         schema:
- *           type: string
- *         example: seiya
- *     responses:
- *       200:
- *         description: Personaje encontrado
- */
+// =====================================================
+// SAINT SEIYA
+// =====================================================
+
+// TODOS
+
+router.get(
+  "/saintseiya/personajes",
+  async (req, res) => {
+
+    try {
+
+      const rows =
+        await obtenerTodosSaintSeiya();
+
+      res.json({
+        total: rows.length,
+        personajes: rows,
+      });
+
+    } catch (err) {
+
+      res.status(500).json({
+        error: err.message,
+      });
+
+    }
+
+  }
+);
+
+// BUSCAR POR NOMBRE
 
 router.get(
   "/saintseiya/personajes/buscar",
@@ -89,24 +101,72 @@ router.get(
   }
 );
 
-/**
- * @swagger
- * /hunterxhunter/personajes/buscar:
- *   get:
- *     summary: Buscar personaje Hunter x Hunter
- *     tags:
- *       - Hunter x Hunter
- *     parameters:
- *       - in: query
- *         name: nombre
- *         required: true
- *         schema:
- *           type: string
- *         example: gon
- *     responses:
- *       200:
- *         description: Personaje encontrado
- */
+// POR ID
+
+router.get(
+  "/saintseiya/personajes/:id",
+  async (req, res) => {
+
+    try {
+
+      const { id } = req.params;
+
+      const personaje =
+        await obtenerSaintSeiyaPorId(id);
+
+      if (!personaje) {
+
+        return res.status(404).json({
+          error: "Personaje no encontrado",
+        });
+
+      }
+
+      res.json(personaje);
+
+    } catch (err) {
+
+      res.status(500).json({
+        error: err.message,
+      });
+
+    }
+
+  }
+);
+
+// =====================================================
+// HUNTER X HUNTER
+// =====================================================
+
+// TODOS
+
+router.get(
+  "/hunterxhunter/personajes",
+  async (req, res) => {
+
+    try {
+
+      const rows =
+        await obtenerTodosHunter();
+
+      res.json({
+        total: rows.length,
+        personajes: rows,
+      });
+
+    } catch (err) {
+
+      res.status(500).json({
+        error: err.message,
+      });
+
+    }
+
+  }
+);
+
+// BUSCAR
 
 router.get(
   "/hunterxhunter/personajes/buscar",
@@ -143,24 +203,72 @@ router.get(
   }
 );
 
-/**
- * @swagger
- * /onepiece/personajes/buscar:
- *   get:
- *     summary: Buscar personaje One Piece
- *     tags:
- *       - One Piece
- *     parameters:
- *       - in: query
- *         name: nombre
- *         required: true
- *         schema:
- *           type: string
- *         example: luffy
- *     responses:
- *       200:
- *         description: Personaje encontrado
- */
+// POR ID
+
+router.get(
+  "/hunterxhunter/personajes/:id",
+  async (req, res) => {
+
+    try {
+
+      const { id } = req.params;
+
+      const personaje =
+        await obtenerHunterPorId(id);
+
+      if (!personaje) {
+
+        return res.status(404).json({
+          error: "Personaje no encontrado",
+        });
+
+      }
+
+      res.json(personaje);
+
+    } catch (err) {
+
+      res.status(500).json({
+        error: err.message,
+      });
+
+    }
+
+  }
+);
+
+// =====================================================
+// ONE PIECE
+// =====================================================
+
+// TODOS
+
+router.get(
+  "/onepiece/personajes",
+  async (req, res) => {
+
+    try {
+
+      const rows =
+        await obtenerTodosOnePiece();
+
+      res.json({
+        total: rows.length,
+        personajes: rows,
+      });
+
+    } catch (err) {
+
+      res.status(500).json({
+        error: err.message,
+      });
+
+    }
+
+  }
+);
+
+// BUSCAR
 
 router.get(
   "/onepiece/personajes/buscar",
@@ -185,6 +293,40 @@ router.get(
         total: rows.length,
         personaje: rows[0],
       });
+
+    } catch (err) {
+
+      res.status(500).json({
+        error: err.message,
+      });
+
+    }
+
+  }
+);
+
+// POR ID
+
+router.get(
+  "/onepiece/personajes/:id",
+  async (req, res) => {
+
+    try {
+
+      const { id } = req.params;
+
+      const personaje =
+        await obtenerOnePiecePorId(id);
+
+      if (!personaje) {
+
+        return res.status(404).json({
+          error: "Personaje no encontrado",
+        });
+
+      }
+
+      res.json(personaje);
 
     } catch (err) {
 

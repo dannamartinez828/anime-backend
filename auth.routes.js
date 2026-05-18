@@ -1,116 +1,150 @@
-const express = require("express");
+const db = require("./db");
 
-const router = express.Router();
+const bcrypt = require("bcrypt");
 
-const authService =
-    require("./auth.service");
+const jwt = require("jsonwebtoken");
 
-/**
- * @swagger
- * /auth/register:
- *   post:
- *     summary: Registrar usuario
- *     tags:
- *       - Auth
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Usuario registrado
- */
+// ======================================
+// REGISTER
+// ======================================
 
-router.post(
-    "/register",
+async function register(
+  nombre,
+  email,
+  password
+) {
 
-    async (req, res) => {
+  // verificar email
 
-        try {
+  const existe = await db.query(
+    `
+    SELECT *
+    FROM usuarios
+    WHERE email = $1
+    `,
+    [email]
+  );
 
-            const {
-                nombre,
-                email,
-                password
-            } = req.body;
+  if (existe.rows.length > 0) {
 
-            const usuario =
-                await authService.register(
-                    nombre,
-                    email,
-                    password
-                );
+    throw new Error(
+      "El email ya existe"
+    );
 
-            res.json(usuario);
+  }
 
-        } catch (error) {
+  // hash password
 
-            res.status(400).json({
-                error: error.message
-            });
-        }
+  const hashedPassword =
+    await bcrypt.hash(password, 10);
+
+  // insertar usuario
+
+  const result = await db.query(
+    `
+    INSERT INTO usuarios
+    (
+      nombre,
+      email,
+      password
+    )
+    VALUES ($1, $2, $3)
+    RETURNING id, nombre, email
+    `,
+    [
+      nombre,
+      email,
+      hashedPassword
+    ]
+  );
+
+  return {
+    message:
+      "Usuario registrado",
+    usuario:
+      result.rows[0],
+  };
+
+}
+
+// ======================================
+// LOGIN
+// ======================================
+
+async function login(
+  email,
+  password
+) {
+
+  const result = await db.query(
+    `
+    SELECT *
+    FROM usuarios
+    WHERE email = $1
+    `,
+    [email]
+  );
+
+  const usuario =
+    result.rows[0];
+
+  if (!usuario) {
+
+    throw new Error(
+      "Usuario no encontrado"
+    );
+
+  }
+
+  // comparar password
+
+  const valido =
+    await bcrypt.compare(
+      password,
+      usuario.password
+    );
+
+  if (!valido) {
+
+    throw new Error(
+      "Contraseña incorrecta"
+    );
+
+  }
+
+  // TOKEN JWT
+
+  const token = jwt.sign(
+
+    {
+      id: usuario.id,
+      email: usuario.email,
+    },
+
+    process.env.JWT_SECRET,
+
+    {
+      expiresIn: "7d",
     }
-);
+  );
 
-/**
- * @swagger
- * /auth/login:
- *   post:
- *     summary: Login usuario
- *     tags:
- *       - Auth
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login exitoso
- */
+  return {
 
-router.post(
-    "/login",
+    message:
+      "Login exitoso",
 
-    async (req, res) => {
+    token,
 
-        try {
+    usuario: {
+      id: usuario.id,
+      nombre: usuario.nombre,
+      email: usuario.email,
+    },
+  };
 
-            const {
-                email,
-                password
-            } = req.body;
+}
 
-            const data =
-                await authService.login(
-                    email,
-                    password
-                );
-
-            res.json(data);
-
-        } catch (error) {
-
-            res.status(400).json({
-                error: error.message
-            });
-        }
-    }
-);
-
-module.exports = router;
+module.exports = {
+  register,
+  login,
+};
