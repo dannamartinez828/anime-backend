@@ -3,7 +3,14 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
-const routes = require("./routes");
+const swaggerUi =
+  require("swagger-ui-express");
+
+const swaggerJsdoc =
+  require("swagger-jsdoc");
+
+const routes =
+  require("./routes");
 
 const authRoutes =
   require("./auth.routes");
@@ -20,6 +27,62 @@ const PORT =
 app.use(cors());
 
 app.use(express.json());
+
+// ======================================
+// SWAGGER
+// ======================================
+
+const options = {
+
+  definition: {
+
+    openapi: "3.0.0",
+
+    info: {
+
+      title:
+        "Anime API",
+
+      version:
+        "1.0.0",
+
+      description:
+        "API de animes con auth y personajes",
+
+    },
+
+    servers: [
+
+      {
+        url:
+          process.env.RAILWAY_STATIC_URL
+            ? `https://${process.env.RAILWAY_STATIC_URL}`
+            : `http://localhost:${PORT}`,
+      },
+
+    ],
+
+  },
+
+  apis: [
+
+    "./routes.js",
+    "./auth.routes.js",
+
+  ],
+
+};
+
+const specs =
+  swaggerJsdoc(options);
+
+app.use(
+  "/docs",
+
+  swaggerUi.serve,
+
+  swaggerUi.setup(specs)
+);
 
 // ======================================
 // ROUTES
