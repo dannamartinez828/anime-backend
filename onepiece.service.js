@@ -1,49 +1,71 @@
 const pool = require("./db");
 
+// ======================================
+// TODOS
+// ======================================
+
+async function obtenerTodosOnePiece() {
+
+  const result = await pool.query(
+    `
+    SELECT *
+    FROM personajes
+    WHERE anime_id = 3
+    ORDER BY id
+    `
+  );
+
+  return result.rows;
+
+}
+
+// ======================================
+// BUSCAR
+// ======================================
+
 async function buscarOnePiece(nombre) {
 
   const result = await pool.query(
     `
-    SELECT
-      p.id,
-      p.nombre,
-      p.edad,
-      p.raza,
-      p.poder,
-      p.descripcion,
-      p.categoria,
-
-      a.nombre AS anime,
-
-      COALESCE(
-        json_agg(i.url ORDER BY i.id)
-        FILTER (WHERE i.url IS NOT NULL),
-        '[]'
-      ) AS imagenes
-
-    FROM personajes p
-
-    JOIN animes a
-      ON p.anime_id = a.id
-
-    LEFT JOIN imagenes i
-      ON i.personaje_id = p.id
-
-    WHERE LOWER(a.nombre) = 'onepiece'
-
-    AND LOWER(p.nombre)
+    SELECT *
+    FROM personajes
+    WHERE anime_id = 3
+    AND LOWER(nombre)
     LIKE LOWER($1)
-
-    GROUP BY p.id, a.nombre
-
-    ORDER BY p.id
     `,
     [`%${nombre}%`]
   );
 
   return result.rows;
+
+}
+
+// ======================================
+// POR ID
+// ======================================
+
+async function obtenerOnePiecePorId(id) {
+
+  const result = await pool.query(
+    `
+    SELECT *
+    FROM personajes
+    WHERE anime_id = 3
+    AND id = $1
+    `,
+    [id]
+  );
+
+  return result.rows[0];
+
 }
 
 module.exports = {
+
+  obtenerTodosOnePiece,
+
   buscarOnePiece,
+
+  obtenerOnePiecePorId,
+
 };

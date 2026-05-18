@@ -1,27 +1,27 @@
 const express = require("express");
 
 const {
+  obtenerTodosSaintSeiya,
   buscarSaintSeiya,
   obtenerSaintSeiyaPorId,
-  obtenerTodosSaintSeiya,
 } = require("./saintseiya.service");
 
 const {
+  obtenerTodosHunter,
   buscarHunter,
   obtenerHunterPorId,
-  obtenerTodosHunter,
 } = require("./hunterxhunter.service");
 
 const {
+  obtenerTodosOnePiece,
   buscarOnePiece,
   obtenerOnePiecePorId,
-  obtenerTodosOnePiece,
 } = require("./onepiece.service");
 
 const router = express.Router();
 
 // ======================================
-// HEALTH CHECK
+// HEALTH
 // ======================================
 
 router.get("/", (req, res) => {
@@ -33,308 +33,134 @@ router.get("/", (req, res) => {
 
 });
 
-// =====================================================
+// ======================================
 // SAINT SEIYA
-// =====================================================
-
-// TODOS
+// ======================================
 
 router.get(
   "/saintseiya/personajes",
   async (req, res) => {
 
-    try {
+    const rows =
+      await obtenerTodosSaintSeiya();
 
-      const rows =
-        await obtenerTodosSaintSeiya();
-
-      res.json({
-        total: rows.length,
-        personajes: rows,
-      });
-
-    } catch (err) {
-
-      res.status(500).json({
-        error: err.message,
-      });
-
-    }
+    res.json(rows);
 
   }
 );
-
-// BUSCAR POR NOMBRE
 
 router.get(
   "/saintseiya/personajes/buscar",
   async (req, res) => {
 
-    try {
+    const rows =
+      await buscarSaintSeiya(
+        req.query.nombre
+      );
 
-      const { nombre } = req.query;
-
-      const rows =
-        await buscarSaintSeiya(nombre);
-
-      if (!rows.length) {
-
-        return res.status(404).json({
-          error: "Personaje no encontrado",
-        });
-
-      }
-
-      res.json({
-        total: rows.length,
-        personaje: rows[0],
-      });
-
-    } catch (err) {
-
-      res.status(500).json({
-        error: err.message,
-      });
-
-    }
+    res.json(rows);
 
   }
 );
-
-// POR ID
 
 router.get(
   "/saintseiya/personajes/:id",
   async (req, res) => {
 
-    try {
+    const personaje =
+      await obtenerSaintSeiyaPorId(
+        req.params.id
+      );
 
-      const { id } = req.params;
-
-      const personaje =
-        await obtenerSaintSeiyaPorId(id);
-
-      if (!personaje) {
-
-        return res.status(404).json({
-          error: "Personaje no encontrado",
-        });
-
-      }
-
-      res.json(personaje);
-
-    } catch (err) {
-
-      res.status(500).json({
-        error: err.message,
-      });
-
-    }
+    res.json(personaje);
 
   }
 );
 
-// =====================================================
-// HUNTER X HUNTER
-// =====================================================
-
-// TODOS
+// ======================================
+// HUNTER
+// ======================================
 
 router.get(
   "/hunterxhunter/personajes",
   async (req, res) => {
 
-    try {
+    const rows =
+      await obtenerTodosHunter();
 
-      const rows =
-        await obtenerTodosHunter();
-
-      res.json({
-        total: rows.length,
-        personajes: rows,
-      });
-
-    } catch (err) {
-
-      res.status(500).json({
-        error: err.message,
-      });
-
-    }
+    res.json(rows);
 
   }
 );
-
-// BUSCAR
 
 router.get(
   "/hunterxhunter/personajes/buscar",
   async (req, res) => {
 
-    try {
+    const rows =
+      await buscarHunter(
+        req.query.nombre
+      );
 
-      const { nombre } = req.query;
-
-      const rows =
-        await buscarHunter(nombre);
-
-      if (!rows.length) {
-
-        return res.status(404).json({
-          error: "Personaje no encontrado",
-        });
-
-      }
-
-      res.json({
-        total: rows.length,
-        personaje: rows[0],
-      });
-
-    } catch (err) {
-
-      res.status(500).json({
-        error: err.message,
-      });
-
-    }
+    res.json(rows);
 
   }
 );
-
-// POR ID
 
 router.get(
   "/hunterxhunter/personajes/:id",
   async (req, res) => {
 
-    try {
+    const personaje =
+      await obtenerHunterPorId(
+        req.params.id
+      );
 
-      const { id } = req.params;
-
-      const personaje =
-        await obtenerHunterPorId(id);
-
-      if (!personaje) {
-
-        return res.status(404).json({
-          error: "Personaje no encontrado",
-        });
-
-      }
-
-      res.json(personaje);
-
-    } catch (err) {
-
-      res.status(500).json({
-        error: err.message,
-      });
-
-    }
+    res.json(personaje);
 
   }
 );
 
-// =====================================================
+// ======================================
 // ONE PIECE
-// =====================================================
-
-// TODOS
+// ======================================
 
 router.get(
   "/onepiece/personajes",
   async (req, res) => {
 
-    try {
+    const rows =
+      await obtenerTodosOnePiece();
 
-      const rows =
-        await obtenerTodosOnePiece();
-
-      res.json({
-        total: rows.length,
-        personajes: rows,
-      });
-
-    } catch (err) {
-
-      res.status(500).json({
-        error: err.message,
-      });
-
-    }
+    res.json(rows);
 
   }
 );
-
-// BUSCAR
 
 router.get(
   "/onepiece/personajes/buscar",
   async (req, res) => {
 
-    try {
+    const rows =
+      await buscarOnePiece(
+        req.query.nombre
+      );
 
-      const { nombre } = req.query;
-
-      const rows =
-        await buscarOnePiece(nombre);
-
-      if (!rows.length) {
-
-        return res.status(404).json({
-          error: "Personaje no encontrado",
-        });
-
-      }
-
-      res.json({
-        total: rows.length,
-        personaje: rows[0],
-      });
-
-    } catch (err) {
-
-      res.status(500).json({
-        error: err.message,
-      });
-
-    }
+    res.json(rows);
 
   }
 );
-
-// POR ID
 
 router.get(
   "/onepiece/personajes/:id",
   async (req, res) => {
 
-    try {
+    const personaje =
+      await obtenerOnePiecePorId(
+        req.params.id
+      );
 
-      const { id } = req.params;
-
-      const personaje =
-        await obtenerOnePiecePorId(id);
-
-      if (!personaje) {
-
-        return res.status(404).json({
-          error: "Personaje no encontrado",
-        });
-
-      }
-
-      res.json(personaje);
-
-    } catch (err) {
-
-      res.status(500).json({
-        error: err.message,
-      });
-
-    }
+    res.json(personaje);
 
   }
 );

@@ -22,14 +22,14 @@ router.post(
         password
       } = req.body;
 
-      const usuario =
+      const data =
         await authService.register(
           nombre,
           email,
           password
         );
 
-      res.json(usuario);
+      res.json(data);
 
     } catch (error) {
 
