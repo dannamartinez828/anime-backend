@@ -1,28 +1,12 @@
 require("dotenv").config();
 
 const express = require("express");
-
 const cors = require("cors");
 
-const swaggerUi =
-  require("swagger-ui-express");
-
-const swaggerJsdoc =
-  require("swagger-jsdoc");
-
-// ======================================
-// IMPORT ROUTES
-// ======================================
-
-const routes =
-  require("./routes");
+const routes = require("./routes");
 
 const authRoutes =
   require("./auth.routes");
-
-// ======================================
-// APP
-// ======================================
 
 const app = express();
 
@@ -30,100 +14,31 @@ const PORT =
   process.env.PORT || 3000;
 
 // ======================================
-// DEBUG
-// ======================================
-
-console.log("AUTH ROUTES:");
-console.log(authRoutes);
-
-// ======================================
 // MIDDLEWARES
 // ======================================
 
-app.use(cors({
-  origin: "*",
-}));
+app.use(cors());
 
 app.use(express.json());
 
-app.set("trust proxy", 1);
-
-// ======================================
-// AUTH ROUTES
-// ======================================
-
-if (typeof authRoutes === "function") {
-
-  app.use("/auth", authRoutes);
-
-} else {
-
-  console.log(
-    "❌ authRoutes NO es un router válido"
-  );
-
-}
-
-// ======================================
-// API ROUTES
-// ======================================
+// ROUTES
 
 app.use(routes);
 
+app.use("/auth", authRoutes);
+
 // ======================================
-// SWAGGER
+// HEALTH CHECK
 // ======================================
 
-const swaggerOptions = {
+app.get("/", (req, res) => {
 
-  definition: {
+  res.json({
+    status: "ok",
+    message: "API funcionando",
+  });
 
-    openapi: "3.0.0",
-
-    info: {
-
-      title:
-        "Anime Microservices API",
-
-      version:
-        "1.0.0",
-
-      description:
-        "API Anime usando Express + PostgreSQL + Railway",
-
-    },
-
-    servers: [
-      {
-        url:
-          process.env.RAILWAY_STATIC_URL
-            ? `https://${process.env.RAILWAY_STATIC_URL}`
-            : `http://localhost:${PORT}`,
-      },
-    ],
-
-  },
-
-  apis: [
-    "./routes.js",
-    "./auth.routes.js",
-  ],
-
-};
-
-const swaggerSpec =
-  swaggerJsdoc(swaggerOptions);
-
-app.use(
-  "/docs",
-  swaggerUi.serve,
-  swaggerUi.setup(
-    swaggerSpec,
-    {
-      explorer: true,
-    }
-  )
-);
+});
 
 // ======================================
 // 404
@@ -132,10 +47,7 @@ app.use(
 app.use((req, res) => {
 
   res.status(404).json({
-
-    error:
-      "Ruta no encontrada",
-
+    error: "Ruta no encontrada",
   });
 
 });
@@ -147,11 +59,7 @@ app.use((req, res) => {
 app.listen(PORT, () => {
 
   console.log(
-    `🚀 Servidor corriendo en puerto ${PORT}`
-  );
-
-  console.log(
-    `📘 Swagger: http://localhost:${PORT}/docs`
+    `🚀 Servidor corriendo en ${PORT}`
   );
 
 });

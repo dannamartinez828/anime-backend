@@ -1,150 +1,80 @@
-const db = require("./db");
+const express = require("express");
 
-const bcrypt = require("bcrypt");
+const router = express.Router();
 
-const jwt = require("jsonwebtoken");
+const authService =
+  require("./auth.service");
 
 // ======================================
 // REGISTER
 // ======================================
 
-async function register(
-  nombre,
-  email,
-  password
-) {
+router.post(
+  "/register",
 
-  // verificar email
+  async (req, res) => {
 
-  const existe = await db.query(
-    `
-    SELECT *
-    FROM usuarios
-    WHERE email = $1
-    `,
-    [email]
-  );
+    try {
 
-  if (existe.rows.length > 0) {
+      const {
+        nombre,
+        email,
+        password
+      } = req.body;
 
-    throw new Error(
-      "El email ya existe"
-    );
+      const usuario =
+        await authService.register(
+          nombre,
+          email,
+          password
+        );
+
+      res.json(usuario);
+
+    } catch (error) {
+
+      res.status(400).json({
+        error: error.message
+      });
+
+    }
 
   }
-
-  // hash password
-
-  const hashedPassword =
-    await bcrypt.hash(password, 10);
-
-  // insertar usuario
-
-  const result = await db.query(
-    `
-    INSERT INTO usuarios
-    (
-      nombre,
-      email,
-      password
-    )
-    VALUES ($1, $2, $3)
-    RETURNING id, nombre, email
-    `,
-    [
-      nombre,
-      email,
-      hashedPassword
-    ]
-  );
-
-  return {
-    message:
-      "Usuario registrado",
-    usuario:
-      result.rows[0],
-  };
-
-}
+);
 
 // ======================================
 // LOGIN
 // ======================================
 
-async function login(
-  email,
-  password
-) {
+router.post(
+  "/login",
 
-  const result = await db.query(
-    `
-    SELECT *
-    FROM usuarios
-    WHERE email = $1
-    `,
-    [email]
-  );
+  async (req, res) => {
 
-  const usuario =
-    result.rows[0];
+    try {
 
-  if (!usuario) {
+      const {
+        email,
+        password
+      } = req.body;
 
-    throw new Error(
-      "Usuario no encontrado"
-    );
+      const data =
+        await authService.login(
+          email,
+          password
+        );
 
-  }
+      res.json(data);
 
-  // comparar password
+    } catch (error) {
 
-  const valido =
-    await bcrypt.compare(
-      password,
-      usuario.password
-    );
+      res.status(400).json({
+        error: error.message
+      });
 
-  if (!valido) {
-
-    throw new Error(
-      "Contraseña incorrecta"
-    );
-
-  }
-
-  // TOKEN JWT
-
-  const token = jwt.sign(
-
-    {
-      id: usuario.id,
-      email: usuario.email,
-    },
-
-    process.env.JWT_SECRET,
-
-    {
-      expiresIn: "7d",
     }
-  );
 
-  return {
+  }
+);
 
-    message:
-      "Login exitoso",
-
-    token,
-
-    usuario: {
-      id: usuario.id,
-      nombre: usuario.nombre,
-      email: usuario.email,
-    },
-  };
-
-}
-
-module.exports = {
-  register,
-  login,
-};
+module.exports = router;
