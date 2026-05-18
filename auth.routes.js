@@ -5,6 +5,31 @@ const router = express.Router();
 const authService =
   require("./auth.service");
 
+  /**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Registrar usuario
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Usuario registrado
+ */
+
 // ======================================
 // REGISTER
 // ======================================
@@ -41,6 +66,29 @@ router.post(
 
   }
 );
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login usuario
+ *     tags:
+ *       - Auth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login exitoso
+ */ 
 
 // ======================================
 // LOGIN
