@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+
 const cors = require("cors");
 
 const swaggerUi =
@@ -9,15 +10,31 @@ const swaggerUi =
 const swaggerJsdoc =
   require("swagger-jsdoc");
 
-const routes = require("./routes");
+// ======================================
+// IMPORT ROUTES
+// ======================================
+
+const routes =
+  require("./routes");
 
 const authRoutes =
   require("./auth.routes");
+
+// ======================================
+// APP
+// ======================================
 
 const app = express();
 
 const PORT =
   process.env.PORT || 3000;
+
+// ======================================
+// DEBUG
+// ======================================
+
+console.log("AUTH ROUTES:");
+console.log(authRoutes);
 
 // ======================================
 // MIDDLEWARES
@@ -32,10 +49,26 @@ app.use(express.json());
 app.set("trust proxy", 1);
 
 // ======================================
-// RUTAS AUTH
+// AUTH ROUTES
 // ======================================
 
-app.use("/auth", authRoutes);
+if (typeof authRoutes === "function") {
+
+  app.use("/auth", authRoutes);
+
+} else {
+
+  console.log(
+    "❌ authRoutes NO es un router válido"
+  );
+
+}
+
+// ======================================
+// API ROUTES
+// ======================================
+
+app.use(routes);
 
 // ======================================
 // SWAGGER
@@ -49,12 +82,14 @@ const swaggerOptions = {
 
     info: {
 
-      title: "Anime Microservices API",
+      title:
+        "Anime Microservices API",
 
-      version: "2.0.0",
+      version:
+        "1.0.0",
 
       description:
-        "API Anime usando Express + PostgreSQL + Railway + Login JWT",
+        "API Anime usando Express + PostgreSQL + Railway",
 
     },
 
@@ -64,28 +99,6 @@ const swaggerOptions = {
           process.env.RAILWAY_STATIC_URL
             ? `https://${process.env.RAILWAY_STATIC_URL}`
             : `http://localhost:${PORT}`,
-      },
-    ],
-
-    components: {
-
-      securitySchemes: {
-
-        bearerAuth: {
-
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
-
-        },
-
-      },
-
-    },
-
-    security: [
-      {
-        bearerAuth: [],
       },
     ],
 
@@ -104,44 +117,13 @@ const swaggerSpec =
 app.use(
   "/docs",
   swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, {
-    explorer: true,
-  })
+  swaggerUi.setup(
+    swaggerSpec,
+    {
+      explorer: true,
+    }
+  )
 );
-
-// ======================================
-// RUTAS API
-// ======================================
-
-app.use(routes);
-
-// ======================================
-// HOME
-// ======================================
-
-app.get("/", (req, res) => {
-
-  res.json({
-
-    mensaje:
-      "🚀 Anime API funcionando correctamente",
-
-    swagger:
-      "/docs",
-
-    auth: {
-
-      register:
-        "/auth/register",
-
-      login:
-        "/auth/login",
-
-    },
-
-  });
-
-});
 
 // ======================================
 // 404
@@ -169,7 +151,7 @@ app.listen(PORT, () => {
   );
 
   console.log(
-    `📘 Swagger Docs: http://localhost:${PORT}/docs`
+    `📘 Swagger: http://localhost:${PORT}/docs`
   );
 
 });
